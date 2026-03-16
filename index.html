@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Card Gallery</title>
+
+<style>
+body{
+    background:#0f1b2d;
+    color:white;
+    font-family:Arial;
+}
+
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,200px);
+    gap:12px;
+    justify-content:center;
+}
+
+.card{
+    background:#1c2a40;
+    border-radius:8px;
+    overflow:hidden;
+}
+
+.card img{
+    width:100%;
+    display:block;
+}
+
+.card-id{
+    text-align:center;
+    padding:6px;
+}
+</style>
+</head>
+
+<body>
+
+<h1 style="text-align:center">Card Gallery</h1>
+<div class="gallery" id="gallery"></div>
+
+<script>
+
+const gallery = document.getElementById("gallery")
+const path = "./images/"     // <-- change if needed
+const extension = ".png"     // <-- change if needed
+
+function addCard(name){
+
+    const card = document.createElement("div")
+    card.className = "card"
+
+    const img = document.createElement("img")
+    img.src = path + name + extension
+
+    img.onerror = function(){
+        card.remove()
+    }
+
+    const label = document.createElement("div")
+    label.className = "card-id"
+    label.innerText = name
+
+    card.appendChild(img)
+    card.appendChild(label)
+
+    gallery.appendChild(card)
+}
+
+for(let i=0;i<=999;i++){
+
+    const num = i.toString().padStart(3,"0")
+
+    addCard(num)
+    addCard(num + "a")
+}
+
+</script>
+
+</body>
+</html>
