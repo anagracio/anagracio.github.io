@@ -54,6 +54,9 @@ body{
 const gallery = document.getElementById("gallery")
 const path = "./images/"     // <-- change if needed
 const extension = ".png"     // <-- change if needed
+const backup = path + "coming_soon" + extension
+
+const alts = [13, 16, 22, 24, 26, 28, 29, 30, 51, 57, 58, 59, 60, 79, 83, 87, 89, 90, 100, 113, 116, 118, 119, 120, 121, 143, 145, 147, 149, 176, 177, 179, 186, 194, 202, 215, 226, 228, 229, 230, 233, 234, 236, 237];
 
 function addCard(name){
 
@@ -64,8 +67,9 @@ function addCard(name){
     img.src = path + name + extension
 
     img.onerror = function(){
-        card.remove()
-    }
+        this.src = backup
+        //  card.remove()
+     }
 
     const label = document.createElement("div")
     label.className = "card-id"
@@ -77,12 +81,14 @@ function addCard(name){
     gallery.appendChild(card)
 }
 
-for(let i=0;i<=258;i++){
+for(let i=1;i<=258;i++){
 
     const num = i.toString().padStart(3,"0")
 
     addCard(num)
-    addCard(num + "a")
+    if(alts.includes(i)){
+        addCard(num + "a")
+    }
 }
 
 </script>
