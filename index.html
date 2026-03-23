@@ -54,6 +54,7 @@ body{
 const gallery = document.getElementById("gallery")
 const path = "./images/"     // <-- change if needed
 const extension = ".png"     // <-- change if needed
+const backup = path + "coming_soon" + extension
 
 function addCard(name){
 
@@ -64,8 +65,9 @@ function addCard(name){
     img.src = path + name + extension
 
     img.onerror = function(){
-        card.remove()
-    }
+        this.src = backup
+        //  card.remove()
+     }
 
     const label = document.createElement("div")
     label.className = "card-id"
