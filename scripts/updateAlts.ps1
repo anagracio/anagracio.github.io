@@ -1,56 +1,57 @@
 $imagesPath = "images"
 $htmlFile = "index.html"
 
-# Get staged files
+Write-Output "=== Pre-commit: Update Alt Art numbers ==="
+
+# Get staged files only
 $stagedFiles = git diff --cached --name-only --diff-filter=ACM
 
-# Filter only images like "images/12a.png"
 $newNumbers = @()
-
 foreach ($file in $stagedFiles) {
     if ($file -match "^$imagesPath/(\d+)a\.png$") {
         $newNumbers += [int]$matches[1]
     }
 }
 
-# If nothing new, exit early
 if ($newNumbers.Count -eq 0) {
     Write-Output "No new matching images staged."
     exit 0
 }
 
-# Read HTML
 $html = Get-Content $htmlFile -Raw
 
-# Extract existing array
-if ($html -match "const imageNumbers = \[(.*?)\];") {
-    $existingString = $matches[1]
+# Multiline-safe regex pattern
+# Pattern to match the entire array, including any whitespace/newlines
+$pattern = "const\s+alts\s*=\s*\[(.*?)\]"
 
-    if ($existingString.Trim() -eq "") {
-        $existingNumbers = @()
-    } else {
-        $existingNumbers = $existingString -split "," | ForEach-Object {
-            [int]($_.Trim())
-        }
-    }
+# Use Singleline mode so . matches newlines
+$match = [regex]::Match($html, $pattern, "Singleline")
+
+if ($match.Success) {
+    
+    $existingString = $match.Groups[1].Value
+
+    # Remove trailing commas, split on comma, trim whitespace
+    $existingNumbers = $existingString -split "," | ForEach-Object {
+        $num = $_.Trim()
+        if ($num -match "^\d+$") { [int]$num }
+    } | Where-Object { $_ -ne $null }
+
 } else {
-    Write-Error "Could not find imageNumbers array in HTML"
+    Write-Output "ERROR: Could not find 'const alts = [...]' in HTML."
+
     exit 1
 }
 
-# Merge + remove duplicates
+# Merge new numbers and remove duplicates
 $allNumbers = ($existingNumbers + $newNumbers) | Sort-Object -Unique
-
-# Convert back to string
 $arrayString = ($allNumbers -join ", ")
 
-# Replace in HTML
-$html = $html -replace "const imageNumbers = \[.*?\];", "const imageNumbers = [$arrayString];"
+# Replace array in HTML
+$html = [regex]::Replace($html, $pattern, "const alts = [$arrayString];", [System.Text.RegularExpressions.RegexOptions]::Singleline)
 
-# Save
+# Save and re-stage
 Set-Content $htmlFile $html
-
-# Re-stage updated HTML
 git add $htmlFile
 
-Write-Output "Updated imageNumbers: $arrayString"
+Write-Output "=== Pre-commit: Alt art numbers updated ==="
