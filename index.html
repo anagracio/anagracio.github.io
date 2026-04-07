@@ -2,102 +2,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Card Gallery</title>
+<title>TCG_Arena_Jinx</title>
 
-<style>
-body{
-    background:#0f1b2d;
-    color:white;
-    font-family:Arial;
-    margin:0;
-}
-
-.gallery{
-    display:grid;
-    grid-template-columns: repeat(6, 1fr); /* 6 per row */
-    gap:12px;
-    padding:20px;
-}
-
-/* Mobile */
-@media (max-width: 768px){
-    .gallery{
-        grid-template-columns: repeat(3, 1fr); /* 3 per row */
-    }
-}
-
-.card{
-    background:#1c2a40;
-    border-radius:8px;
-    overflow:hidden;
-}
-
-.card img{
-    width:100%;
-    display:block;
-}
-
-.card-id{
-    text-align:center;
-    padding:6px;
-}
-</style>
 </head>
 
 <body>
 
-<h1 style="text-align:center">Card Gallery</h1>
-<div class="gallery" id="gallery"></div>
-
-<script>
-
-const gallery = document.getElementById("gallery")
-const path = "./images/"     // <-- change if needed
-const extension = ".png"     // <-- change if needed
-const backup = path + "coming_soon" + extension
-
-const alts = [22, 24, 28, 29, 30, 51, 55, 58, 59, 60, 79, 82, 87, 89, 90, 113, 116, 118, 119, 120, 143, 145, 147, 149, 150, 172, 176, 177, 178, 179, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237];;;
-
-function addCard(name){
-
-    const card = document.createElement("div")
-    card.className = "card"
-
-    const img = document.createElement("img")
-    img.src = path + name + extension
-
-    img.onerror = function(){
-        this.src = backup
-        //  card.remove()
-     }
-
-    const label = document.createElement("div")
-    label.className = "card-id"
-    label.innerText = name
-
-    card.appendChild(img)
-    card.appendChild(label)
-
-    gallery.appendChild(card)
-}
-
-for(let i=1;i<=252;i++){
-
-    const num = i.toString().padStart(3,"0")
-
-    addCard(num)
-    if(alts.includes(i)){
-        addCard(num + "a")
-    }
-}
-
-</script>
+<img src="jinx_tcg_arena.png" alt="TCG Arena Jinx" style="width: 100%; height: auto;">
 
 </body>
 </html>
-
-
-
-
-
-
